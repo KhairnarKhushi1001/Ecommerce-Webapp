@@ -1,72 +1,161 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Offers from "../components/Offers";
-import Categories from "../components/Categories";
-import Carousel from "../components/Carousel";
-import Navbar from "../components/Navbar";
+import ProductCard from "../components/ProductCard";
+
+const products = [
+  {
+    id: 1,
+    name: "Organic Apples",
+    description: "Fresh and juicy apples directly from farms",
+    category: "Fruits",
+    price: 199,
+    originalPrice: 249,
+    rating: 4,
+    image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce",
+  },
+  
+  {
+    id: 4,
+    name: "Broccoli",
+    description: "Green and nutritious broccoli florets",
+    category: "Vegetables",
+    price: 89,
+    originalPrice: 120,
+    rating: 3,
+    image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
+  },
+  
+  {
+    id: 7,
+    name: "Potato Chips",
+    description: "Crispy salted potato chips",
+    category: "Snacks",
+    price: 40,
+    originalPrice: 50,
+    rating: 4,
+    image: "https://images.unsplash.com/photo-1585238342028-4c4d3a3b8f72",
+  },
+  {
+    id: 8,
+    name: "Almonds",
+    description: "Premium quality dry fruits",
+    category: "Dry Fruits",
+    price: 499,
+    originalPrice: 599,
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1508747703725-719777637510",
+  },
+  {
+    id: 9,
+    name: "Orange Juice",
+    description: "Freshly squeezed orange juice",
+    category: "Beverages",
+    price: 120,
+    originalPrice: 150,
+    rating: 4,
+    image: "https://images.unsplash.com/photo-1571689936034-7a8e26c3b1b1",
+  },
+  {
+    id: 10,
+    name: "Strawberries",
+    description: "Sweet and fresh strawberries",
+    category: "Fruits",
+    price: 180,
+    originalPrice: 220,
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6",
+  },
+];
 
 const HomePage = () => {
   const navigate = useNavigate();
 
-  const slideData = [
-    {
-      title: "Mystic Mountains",
-      button: "Explore Component",
-      src: "https://images.unsplash.com/photo-1494806812796-244fe51b774d?q=80&w=3534&auto=format&fit=crop",
-    },
-    {
-      title: "Urban Dreams",
-      button: "Explore Component",
-      src: "https://images.unsplash.com/photo-1518710843675-2540dd79065c?q=80&w=3387&auto=format&fit=crop",
-    },
-    {
-      title: "Neon Nights",
-      button: "Explore Component",
-      src: "https://images.unsplash.com/photo-1590041794748-2d8eb73a571c?q=80&w=3456&auto=format&fit=crop",
-    },
-    {
-      title: "Desert Whispers",
-      button: "Explore Component",
-      src: "https://images.unsplash.com/photo-1679420437432-80cfbf88986c?q=80&w=3540&auto=format&fit=crop",
-    },
-  ];
-
   return (
-    <div className="min-h-screen w-full bg-gray-950 text-white overflow-y-auto">
+    <div className="w-full">
 
-      {/* Page Content */}
-      <div className="space-y-12 p-6 pb-32">
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative h-screen w-full">
+        
+        {/* Background Image */}
+        <img
+          src="../../public/Images/Background_image.jpg"
+          alt="hero"
+          className="w-full h-full object-cover"
+        />
 
-        {/* Hero */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-wide">
-            Welcome to Store
-          </h1>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/40"></div>
 
-          <button
-            className="mt-6 px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
-            onClick={() => navigate("/products")}
-          >
-            Shop Now
-          </button>
+        {/* Left Content */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="ml-10 md:ml-20 max-w-xl text-white space-y-6">
+            
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+              Fresh & Organic Products
+            </h1>
+
+            <p className="text-lg text-gray-200">
+              Discover the best quality groceries delivered fresh to your doorstep.
+            </p>
+
+            <button
+              onClick={() => navigate("/products")}
+              className="px-6 py-3 bg-green-500 hover:bg-green-600 transition rounded-lg text-white font-medium shadow-md"
+            >
+              Start Shopping
+            </button>
+
+          </div>
         </div>
+      </section>
 
-        {/* Offers */}
-        <Offers />
+      {/* ================= CATEGORIES SECTION ================= */}
+      <section className="py-16 px-6 md:px-16 bg-gray-50">
+        
+        <h2 className="text-2xl font-semibold mb-8 text-gray-800">
+          Shop by Category
+        </h2>
 
-        {/* Categories */}
-        {/* <Categories /> */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          
+          {["Fruits", "Vegetables", "Dairy", "Snacks"].map((cat, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center cursor-pointer hover:shadow-md hover:scale-105 transition"
+            >
+              <p className="text-gray-700 font-medium">{cat}</p>
+            </div>
+          ))}
 
-        {/* Carousel */}
-        <Carousel slides={slideData} />
+        </div>
+      </section>
 
-      </div>
+      {/* ================= BEST SELLING PRODUCTS ================= */}
+      <section className="py-16 px-6 md:px-16 bg-white">
+        
+        <h2 className="text-2xl font-semibold mb-8 text-gray-800">
+          Best Selling Products
+        </h2>
 
-      {/* Floating Navbar */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-        <Navbar />
-      </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          
+          {products.map((p) => (
+        <ProductCard
+          key={p.id}
+          image={p.image}
+          name={p.name}
+          description={p.description}
+          category={p.category}
+          price={p.price}
+          originalPrice={p.originalPrice}
+          rating={p.rating}
+        />
+      ))}
 
+        </div>
+      </section>
+
+      
     </div>
   );
 };

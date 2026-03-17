@@ -1,76 +1,108 @@
-import { useState } from "react";
+import React from "react";
 
-export default function Navbar() {
-  const [expand, setExpand] = useState(false);
-
+const Navbar = () => {
   return (
-    <div
-      className={`flex items-center justify-around h-12 rounded-xl 
-      backdrop-blur-lg bg-white/10 border border-white/20
-      transition-all duration-500
-      ${expand ? "w-96" : "w-64"}`}
-    >
-      {/* Home */}
-      <button className="flex p-2 items-center justify-center w-10 h-10 rounded-full text-white hover:-translate-y-1 transition">
-        <svg
-          viewBox="0 0 1024 1024"
-          className="text-xl"
-          fill="currentColor"
-        >
-          <path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z" />
-        </svg>
-      </button>
+    <nav className="w-full sticky top-0 z-50 bg-white/70 backdrop-blur-md shadow-sm px-6 py-3 flex items-center justify-between">
+      
+      {/* LEFT SECTION */}
+      <div className="flex items-center gap-4">
+        {/* Logo */}
+        <div className="flex items-center gap-2 cursor-pointer">
+          <h1 className="text-xl font-semibold tracking-wide text-gray-800">
+            ShoppingHub
+          </h1>
+        </div>
 
-      {/* Search */}
-      <button
-        onClick={() => setExpand(!expand)}
-        className="flex p-2 items-center justify-center w-10 h-10 rounded-full text-white hover:-translate-y-1 transition"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          fill="none"
-          strokeWidth="2"
-          className="text-xl"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
-      </button>
+        {/* Menu Icon */}
+        <div className="cursor-pointer group">
+          <svg
+            className="w-5 h-5 text-gray-600 group-hover:text-black transition"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </div>
+      </div>
 
-      {/* Search Input (visible when expanded) */}
-      {expand && (
+      {/* SEARCH BAR */}
+      <div className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 w-[40%] hover:shadow-md transition">
+        
+        <select className="bg-transparent text-gray-600 text-sm outline-none cursor-pointer">
+          <option>All Categories</option>
+        </select>
+
         <input
           type="text"
-          placeholder="Search..."
-          className="bg-transparent border-b border-white outline-none text-white px-2 w-32"
+          placeholder="Search for more than 20,000 products"
+          className="bg-transparent flex-1 px-3 outline-none text-sm"
         />
-      )}
 
-      {/* Profile */}
-      <button className="flex p-2 items-center justify-center w-10 h-10 rounded-full text-white hover:-translate-y-1 transition">
-        <svg viewBox="0 0 24 24" fill="currentColor" className="text-xl">
-          <path d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5Z" />
-        </svg>
-      </button>
-
-      {/* Cart */}
-      <button className="flex p-2 items-center justify-center w-10 h-10 rounded-full text-white hover:-translate-y-1 transition">
+        {/* Search Icon */}
         <svg
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+          className="w-5 h-5 text-gray-500 hover:text-black cursor-pointer transition"
           fill="none"
+          stroke="currentColor"
           strokeWidth="2"
-          className="text-xl"
+          viewBox="0 0 24 24"
         >
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.3-4.3" />
         </svg>
-      </button>
-    </div>
+      </div>
+
+      {/* NAV LINKS */}
+      <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
+        <p className="cursor-pointer hover:text-black transition">HOME</p>
+        <p className="cursor-pointer hover:text-black transition flex items-center gap-1">
+          PAGES
+          <span className="text-xs">▼</span>
+        </p>
+      </div>
+
+      {/* RIGHT ICONS */}
+      <div className="flex items-center gap-4">
+        
+        {/* User */}
+        <svg
+          className="w-5 h-5 text-gray-600 hover:text-black cursor-pointer transition"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="12" cy="7" r="4" />
+          <path d="M5.5 21a8.38 8.38 0 0 1 13 0" />
+        </svg>
+
+        {/* Heart */}
+        <svg
+          className="w-5 h-5 text-gray-600 hover:text-black cursor-pointer transition"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+        </svg>
+
+        {/* Cart */}
+        <svg
+          className="w-5 h-5 text-gray-600 hover:text-black cursor-pointer transition"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="9" cy="21" r="1" />
+          <circle cx="20" cy="21" r="1" />
+          <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L23 6H6" />
+        </svg>
+      </div>
+    </nav>
   );
-}
+};
+
+export default Navbar;
