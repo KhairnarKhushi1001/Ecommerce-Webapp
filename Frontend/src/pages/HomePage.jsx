@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
+import axios from "axios";
 
 const products = [
   {
@@ -11,7 +13,7 @@ const products = [
     price: 199,
     originalPrice: 249,
     rating: 4,
-    image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce",
+    // image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce",
   },
   
   {
@@ -22,7 +24,7 @@ const products = [
     price: 89,
     originalPrice: 120,
     rating: 3,
-    image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
+    // image: "https://images.unsplash.com/photo-1587049352851-8d4e89133924",
   },
   
   {
@@ -33,7 +35,7 @@ const products = [
     price: 40,
     originalPrice: 50,
     rating: 4,
-    image: "https://images.unsplash.com/photo-1585238342028-4c4d3a3b8f72",
+    // image: "https://images.unsplash.com/photo-1585238342028-4c4d3a3b8f72",
   },
   {
     id: 8,
@@ -43,7 +45,7 @@ const products = [
     price: 499,
     originalPrice: 599,
     rating: 5,
-    image: "https://images.unsplash.com/photo-1508747703725-719777637510",
+    // image: "https://images.unsplash.com/photo-1508747703725-719777637510",
   },
   {
     id: 9,
@@ -53,7 +55,7 @@ const products = [
     price: 120,
     originalPrice: 150,
     rating: 4,
-    image: "https://images.unsplash.com/photo-1571689936034-7a8e26c3b1b1",
+    // image: "https://images.unsplash.com/photo-1571689936034-7a8e26c3b1b1",
   },
   {
     id: 10,
@@ -63,12 +65,21 @@ const products = [
     price: 180,
     originalPrice: 220,
     rating: 5,
-    image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6",
+    // image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6",
   },
 ];
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+   useEffect(() => {
+    fetch("http://localhost:8082/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data))
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+
+
 
   return (
     <div className="w-full">
@@ -118,12 +129,15 @@ const HomePage = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           
-          {["Fruits", "Vegetables", "Dairy", "Snacks"].map((cat, i) => (
+          {categories.map((cat) => (
             <div
-              key={i}
-              className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center cursor-pointer hover:shadow-md hover:scale-105 transition"
+              key={cat.category_id}
+              onClick={() => navigate(`/categories/${cat.category_id}/products`)}  // ✅ ADD THIS
+              className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center cursor-pointer hover:shadow-md hover:scale-105 hover:bg-green-50 transition"
             >
-              <p className="text-gray-700 font-medium">{cat}</p>
+              <p className="text-gray-700 font-medium">
+                {cat.category_name}
+              </p>
             </div>
           ))}
 
@@ -142,6 +156,7 @@ const HomePage = () => {
           {products.map((p) => (
         <ProductCard
           key={p.id}
+          product={p}
           image={p.image}
           name={p.name}
           description={p.description}

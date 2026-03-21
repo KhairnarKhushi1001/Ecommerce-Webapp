@@ -34,7 +34,7 @@ const Footer = () => {
             
             {/* Instagram */}
             <a
-              href="#"
+              href="https://www.instagram.com/?hl=en"
               className="p-2 bg-gray-800 rounded-full hover:bg-pink-500 transition"
             >
               <svg
@@ -52,7 +52,7 @@ const Footer = () => {
 
             {/* Facebook */}
             <a
-              href="#"
+              href="https://www.facebook.com/"
               className="p-2 bg-gray-800 rounded-full hover:bg-blue-600 transition"
             >
               <svg
@@ -66,7 +66,7 @@ const Footer = () => {
 
             {/* Twitter */}
             <a
-              href="#"
+              href="https://x.com/"
               className="p-2 bg-gray-800 rounded-full hover:bg-blue-400 transition"
             >
               <svg
@@ -80,7 +80,7 @@ const Footer = () => {
 
             {/* LinkedIn */}
             <a
-              href="#"
+              href="https://www.linkedin.com/uas/login"
               className="p-2 bg-gray-800 rounded-full hover:bg-blue-700 transition"
             >
               <svg

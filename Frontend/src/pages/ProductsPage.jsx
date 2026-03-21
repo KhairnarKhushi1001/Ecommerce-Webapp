@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
+import Loader from "../components/Loader/Loader";
 
-const ProductsPage = () => {
+const ProductsPage = ({ setProduct }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -10,6 +11,7 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+
         const response = await axios.get("http://localhost:8080/products");
         setProducts(response.data);
       } catch (err) {
@@ -20,10 +22,19 @@ const ProductsPage = () => {
       }
     };
 
+    // Loader Demo
+    // const timer = setTimeout(() => {
+    //       fetchProducts();
+    //     }, 5000);
+
+    // return () => clearTimeout(timer);
+
     fetchProducts();
   }, []);
 
-  if (loading) return <p className="text-center mt-10 text-gray-500">Loading...</p>;
+  if (loading) return <div className="flex justify-center items-center h-screen">
+      <Loader size={60} speed={1} />
+    </div>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
@@ -31,7 +42,7 @@ const ProductsPage = () => {
       <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Our Products</h1>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <ProductCard key={product.product_id} product={product} />
+          <ProductCard key={product.product_id} product={product} setProduct={setProduct} />
         ))}
       </div>
     </div>
