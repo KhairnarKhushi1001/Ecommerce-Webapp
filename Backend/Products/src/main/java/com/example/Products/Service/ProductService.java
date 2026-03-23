@@ -20,4 +20,6 @@ public interface ProductService {
     Products createProduct(Products products, List<String> imageUrls);
     
     Products addImagesToProduct(Long productId, List<String> imageUrls);
+    
+    List<Products> searchProducts(String keyword);
 }

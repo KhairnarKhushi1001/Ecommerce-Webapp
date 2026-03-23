@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL_CATEGORIES, BASE_URL_PRODUCTS } from "../../dotenv";
 import toast from "react-hot-toast";
 
-
 const API_URLS = {
   CATEGORIES: `${BASE_URL_CATEGORIES}/categories`,
   PRODUCTS: `${BASE_URL_PRODUCTS}/products`,
   SIGNATURE: `${BASE_URL_PRODUCTS}/products/upload/signature`,
-  
 };
 
 const AddProduct = () => {
@@ -21,9 +19,14 @@ const AddProduct = () => {
   });
 
   const [categories, setCategories] = useState([]);
-  const [images, setImages] = useState([]); // {file, preview, progress, url}
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+
+  // ✅ NEW STATES
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
 
   // Fetch categories
   const fetchCategories = async () => {
@@ -44,6 +47,38 @@ const AddProduct = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ ADD CATEGORY FUNCTION
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) {
+      toast.error("Category name required");
+      return;
+    }
+
+    try {
+      setAddingCategory(true);
+
+      const res = await fetch(API_URLS.CATEGORIES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category_name: newCategory }),
+      });
+
+      await res.json();
+
+      toast.success("Category added!");
+
+      setNewCategory("");
+      setShowAddCategory(false);
+
+      fetchCategories();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error adding category");
+    } finally {
+      setAddingCategory(false);
+    }
+  };
+
   // Handle file selection
   const handleFiles = (files) => {
     const fileArray = Array.from(files);
@@ -52,7 +87,10 @@ const AddProduct = () => {
       return;
     }
 
-    const validFiles = fileArray.filter((file) => file.type.startsWith("image/"));
+    const validFiles = fileArray.filter((file) =>
+      file.type.startsWith("image/")
+    );
+
     const newImages = validFiles.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
@@ -63,7 +101,6 @@ const AddProduct = () => {
     setImages((prev) => [...prev, ...newImages]);
   };
 
-  // Drag & drop handlers
   const handleDrop = (e) => {
     e.preventDefault();
     setDragActive(false);
@@ -81,13 +118,10 @@ const AddProduct = () => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Upload a single image to Cloudinary
   const uploadImage = async (image, index) => {
-    // 1️⃣ Get signature from backend
     const sigRes = await fetch(API_URLS.SIGNATURE);
     const sigData = await sigRes.json();
 
-    // 2️⃣ Prepare FormData
     const formDataUpload = new FormData();
     formDataUpload.append("file", image.file);
     formDataUpload.append("api_key", sigData.api_key);
@@ -95,11 +129,13 @@ const AddProduct = () => {
     formDataUpload.append("signature", sigData.signature);
     formDataUpload.append("folder", "products");
 
-    // 3️⃣ Upload via XMLHttpRequest to track progress
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `https://api.cloudinary.com/v1_1/${sigData.cloud_name}/auto/upload`);
-      
+      xhr.open(
+        "POST",
+        `https://api.cloudinary.com/v1_1/${sigData.cloud_name}/auto/upload`
+      );
+
       xhr.upload.addEventListener("progress", (e) => {
         if (e.lengthComputable) {
           const percent = Math.round((e.loaded * 100) / e.total);
@@ -141,27 +177,36 @@ const AddProduct = () => {
     setLoading(true);
 
     try {
-      // 1️⃣ Upload all images sequentially or in parallel
-      const uploadPromises = images.map((img, index) => uploadImage(img, index));
+      const uploadPromises = images.map((img, index) =>
+        uploadImage(img, index)
+      );
       const uploadedUrls = await Promise.all(uploadPromises);
 
-      // 2️⃣ Submit product data with uploaded image URLs
       const { quantity, ...productData } = formData;
+
       const res = await fetch(API_URLS.PRODUCTS, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData ),
+        body: JSON.stringify(productData),
       });
 
       const data = await res.json();
-      const resImg = await fetch(`${API_URLS.PRODUCTS}/${data.productId}/images`, {
+
+      await fetch(`${API_URLS.PRODUCTS}/${data.productId}/images`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(uploadedUrls ),
+        body: JSON.stringify(uploadedUrls),
       });
+
       toast.success("Product added successfully!");
 
-      setFormData({ name: "", description: "", price: "", category: "", quantity: "" });
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        quantity: "",
+      });
       setImages([]);
     } catch (err) {
       console.error(err);
@@ -179,7 +224,7 @@ const AddProduct = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
+
           <input
             type="text"
             name="name"
@@ -190,7 +235,6 @@ const AddProduct = () => {
             required
           />
 
-          {/* Description */}
           <textarea
             name="description"
             placeholder="Description"
@@ -200,7 +244,6 @@ const AddProduct = () => {
             required
           />
 
-          {/* Price & Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="number"
@@ -222,21 +265,64 @@ const AddProduct = () => {
             />
           </div>
 
-          {/* Category */}
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
-            required
-          >
-            <option value="">Select Category</option>
-            {categories.map((categorie) => (
-              <option key={categorie.id} value={categorie.id}>
-                {categorie.category_name}
-              </option>
-            ))}
-          </select>
+          {/* ✅ CATEGORY SECTION */}
+          <div className="flex items-center gap-2 transition-all duration-300">
+            {!showAddCategory ? (
+              <>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((categorie) => (
+                    <option key={categorie.id} value={categorie.id}>
+                      {categorie.category_name}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAddCategory(true)}
+                  className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition hover:scale-105 active:scale-95 shadow"
+                >
+                  +
+                </button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  placeholder="New Category"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-400 outline-none"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                >
+                  {addingCategory ? "..." : "Add"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddCategory(false);
+                    setNewCategory("");
+                  }}
+                  className="px-3 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+                >
+                  ✕
+                </button>
+              </>
+            )}
+          </div>
 
           {/* Drag & Drop */}
           <div
@@ -247,8 +333,13 @@ const AddProduct = () => {
               dragActive ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
             }`}
           >
-            <p className="text-gray-600">Drag & Drop images here or click to upload</p>
-            <p className="text-sm text-gray-400 mt-1">(Min 1, Max 10 images)</p>
+            <p className="text-gray-600">
+              Drag & Drop images here or click to upload
+            </p>
+            <p className="text-sm text-gray-400 mt-1">
+              (Min 1, Max 10 images)
+            </p>
+
             <input
               type="file"
               multiple
@@ -257,6 +348,7 @@ const AddProduct = () => {
               className="hidden"
               id="fileUpload"
             />
+
             <label
               htmlFor="fileUpload"
               className="inline-block mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg cursor-pointer hover:bg-indigo-700"
@@ -265,12 +357,16 @@ const AddProduct = () => {
             </label>
           </div>
 
-          {/* Image Previews with Progress */}
           {images.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {images.map((img, index) => (
                 <div key={index} className="relative">
-                  <img src={img.preview} alt="preview" className="w-full h-24 object-cover rounded-lg" />
+                  <img
+                    src={img.preview}
+                    alt="preview"
+                    className="w-full h-24 object-cover rounded-lg"
+                  />
+
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
@@ -278,6 +374,7 @@ const AddProduct = () => {
                   >
                     ✕
                   </button>
+
                   {img.progress > 0 && img.progress < 100 && (
                     <div className="absolute bottom-1 left-1 right-1 h-2 bg-gray-200 rounded">
                       <div
@@ -286,13 +383,17 @@ const AddProduct = () => {
                       ></div>
                     </div>
                   )}
-                  {img.progress === 100 && <p className="text-xs text-green-600 text-center">Uploaded</p>}
+
+                  {img.progress === 100 && (
+                    <p className="text-xs text-green-600 text-center">
+                      Uploaded
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
           )}
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}

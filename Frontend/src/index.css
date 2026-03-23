@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* 🔥 Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 🌙 Scrollbar Styling (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 6px; /* slim */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* clean look */
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a1a1aa, #52525b); /* soft gradient */
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+/* ✨ Hover Effect */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8); /* blue glow */
+}
+
+/* 🌐 Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #52525b transparent;
+}

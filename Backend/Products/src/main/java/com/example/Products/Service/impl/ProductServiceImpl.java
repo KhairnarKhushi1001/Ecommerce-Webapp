@@ -80,6 +80,17 @@ public class ProductServiceImpl implements ProductService {
     }
     
     @Override
+    public List<Products> searchProducts(String keyword) {
+        return repository
+            .findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                keyword,
+                keyword,
+                keyword
+            );
+    }
+    
+    
+    @Override
     public Products addImagesToProduct(Long productId, List<String> imageUrls) {
 
         Products product = repository.findById(productId).orElseThrow();

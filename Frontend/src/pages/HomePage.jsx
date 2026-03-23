@@ -69,7 +69,7 @@ const products = [
   },
 ];
 
-const HomePage = () => {
+const HomePage = ({ searchTerm }) => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
    useEffect(() => {
@@ -79,6 +79,7 @@ const HomePage = () => {
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
+  const [products, setProducts] = useState([]);
 
 
   return (
@@ -127,13 +128,13 @@ const HomePage = () => {
           Shop by Category
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="flex flex-row overflow-x-scroll p-2 gap-6">
           
           {categories.map((cat) => (
             <div
               key={cat.category_id}
               onClick={() => navigate(`/categories/${cat.category_id}/products`)}  // ✅ ADD THIS
-              className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center cursor-pointer hover:shadow-md hover:scale-105 hover:bg-green-50 transition"
+              className="bg-white rounded-xl min-w-[25%] shadow-sm p-6 flex items-center justify-center cursor-pointer hover:shadow-md hover:scale-105 hover:bg-green-50 transition"
             >
               <p className="text-gray-700 font-medium">
                 {cat.category_name}

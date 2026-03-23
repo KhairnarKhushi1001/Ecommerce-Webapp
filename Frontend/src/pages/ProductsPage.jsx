@@ -3,10 +3,24 @@ import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import Loader from "../components/Loader/Loader";
 
-const ProductsPage = ({ setProduct }) => {
+const ProductsPage = ({ setProduct, setIsSearchBarVisible, searchTerm }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  setIsSearchBarVisible(true);
+    
+  // ✅ API CALL WITH DEBOUNCE
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (searchTerm.trim() !== "") {
+        axios
+          .get(`http://localhost:8080/products/search?keyword=${searchTerm}`)
+          .then((res) => setProducts(res.data));
+      }
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
 
   useEffect(() => {
     const fetchProducts = async () => {

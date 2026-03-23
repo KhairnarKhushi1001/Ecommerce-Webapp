@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cloudinary.Cloudinary;
@@ -76,7 +77,13 @@ public class ProductsController {
 	    return service.addImagesToProduct(id, imageUrls);
 	}
 	
-	
+	@GetMapping("/search")
+	public List<Products> searchProducts(@RequestParam String keyword) {
+	    if (keyword == null || keyword.trim().isEmpty()) {
+	        return service.getAll();
+	    }
+	    return service.searchProducts(keyword);
+	}
 
 	@GetMapping("/upload/signature")
 	public Map<String, Object> getUploadSignature() {
